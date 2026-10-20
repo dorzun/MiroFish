@@ -50,7 +50,7 @@
 
       <!-- Right Panel: Step Components -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
-        <!-- Step 1: 图谱构建 -->
+        <!-- Step 1: Graph Building -->
         <Step1GraphBuild 
           v-if="currentStep === 1"
           :currentPhase="currentPhase"
@@ -61,7 +61,7 @@
           :systemLogs="systemLogs"
           @next-step="handleNextStep"
         />
-        <!-- Step 2: 环境搭建 -->
+        <!-- Step 2: Environment Setup -->
         <Step2EnvSetup
           v-else-if="currentStep === 2"
           :projectData="projectData"
@@ -95,7 +95,7 @@ const { t, tm } = useI18n()
 const viewMode = ref('split') // graph | split | workbench
 
 // Step State
-const currentStep = ref(1) // 1: 图谱构建, 2: 环境搭建, 3: 开始模拟, 4: 报告生成, 5: 深度互动
+const currentStep = ref(1) // 1: Graph building, 2: Environment setup, 3: Start simulation, 4: Report generation, 5: Deep interaction
 const stepNames = computed(() => tm('main.stepNames'))
 
 // Data State
@@ -166,7 +166,7 @@ const handleNextStep = (params = {}) => {
     currentStep.value++
     addLog(t('log.enterStep', { step: currentStep.value, name: stepNames.value[currentStep.value - 1] }))
     
-    // 如果是从 Step 2 进入 Step 3，记录模拟轮数配置
+    // If entering Step 3 from Step 2, record the simulation rounds configuration
     if (currentStep.value === 3 && params.maxRounds) {
       addLog(t('log.customSimRounds', { rounds: params.maxRounds }))
     }

@@ -1,0 +1,16 @@
+[project]
+name = "muse-llm-bridge"
+version = "0.1.0"
+description = "OpenAI-compatible LLM endpoint answered by the MCP host agent (Muse) itself"
+requires-python = ">=3.11"
+license = { text = "AGPL-3.0" }
+dependencies = [
+    "flask>=3.0.0",
+]
+
+[tool.uv]
+package = false
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
