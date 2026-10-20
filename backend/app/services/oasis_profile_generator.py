@@ -265,7 +265,7 @@ class OasisProfileGenerator:
         self.zep_client = None
         self.graph_id = graph_id
         
-        if self.zep_api_key:
+        if self.zep_api_key or Config.GRAPH_BACKEND == "local":
             try:
                 self.zep_client = get_zep_client(self.zep_api_key)
             except Exception as e:

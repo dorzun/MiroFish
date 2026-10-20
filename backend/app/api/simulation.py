@@ -87,7 +87,7 @@ def get_graph_entities(graph_id: str):
         enrich: Whether to fetch related edge information (default true)
     """
     try:
-        if not Config.ZEP_API_KEY:
+        if Config.GRAPH_BACKEND == "zep" and not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
                 "error": t('api.zepApiKeyMissing')
@@ -124,7 +124,7 @@ def get_graph_entities(graph_id: str):
 def get_entity_detail(graph_id: str, entity_uuid: str):
     """Get detailed information for a single entity"""
     try:
-        if not Config.ZEP_API_KEY:
+        if Config.GRAPH_BACKEND == "zep" and not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
                 "error": t('api.zepApiKeyMissing')
@@ -157,7 +157,7 @@ def get_entity_detail(graph_id: str, entity_uuid: str):
 def get_entities_by_type(graph_id: str, entity_type: str):
     """Get all entities of a specified type"""
     try:
-        if not Config.ZEP_API_KEY:
+        if Config.GRAPH_BACKEND == "zep" and not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
                 "error": t('api.zepApiKeyMissing')

@@ -62,8 +62,19 @@ def _cached_zep_client(api_key: str, timeout: float) -> Zep:
     )
 
 
-def get_zep_client(api_key: str | None = None, timeout: float | None = None) -> Zep:
-    """Return a process-shared, explicitly configured Zep Cloud client."""
+def get_zep_client(api_key: str | None = None, timeout: float | None = None):
+    """Return the configured graph client (local SQLite backend or Zep Cloud).
+
+    When ``Config.GRAPH_BACKEND`` is ``"local"`` (the default in this fork),
+    this returns the self-hosted local graph client and no Zep API key is
+    required. The return type is intentionally unannotated: callers only rely
+    on the duck-typed ``graph``/``batch`` attribute surface.
+    """
+
+    if getattr(Config, "GRAPH_BACKEND", "zep") == "local":
+        from ..services.local_graph import get_local_graph_client
+
+        return get_local_graph_client()
 
     # zep-cloud gives ZEP_API_URL precedence even when base_url is explicit.
     # Reject it so this Cloud-only integration cannot silently target a
@@ -87,6 +98,12 @@ def clear_zep_client_cache() -> None:
     """Clear cached clients. Intended for tests and controlled reconfiguration."""
 
     _cached_zep_client.cache_clear()
+    try:
+        from ..services.local_graph import clear_local_graph_client_cache
+
+        clear_local_graph_client_cache()
+    except Exception:
+        pass
 
 
 def is_retryable_zep_error(error: BaseException) -> bool:

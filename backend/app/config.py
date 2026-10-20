@@ -31,6 +31,22 @@ class Config:
     
     # Zep configuration
     ZEP_API_KEY = os.environ.get('ZEP_API_KEY')
+
+    # Graph backend: "local" stores the knowledge graph in a local SQLite
+    # database with LLM-based extraction (no external account required);
+    # "zep" uses Zep Cloud and requires ZEP_API_KEY.
+    GRAPH_BACKEND = os.environ.get('GRAPH_BACKEND', 'local').strip().lower() or 'local'
+    # SQLite file for the local graph backend (overridable for tests).
+    LOCAL_GRAPH_DB_PATH = os.environ.get(
+        'MIROFISH_LOCAL_GRAPH_DB',
+        os.path.join(os.path.dirname(__file__), 'local_graph.db'),
+    )
+    # Concurrent LLM extraction workers when a local batch is processed.
+    # Extraction requests are fired together so a queued LLM endpoint (e.g.
+    # the Muse LLM Bridge) can answer them in batches.
+    LOCAL_GRAPH_EXTRACTION_WORKERS = int(
+        os.environ.get('LOCAL_GRAPH_EXTRACTION_WORKERS', '8')
+    )
     
     # File upload configuration
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB
@@ -66,10 +82,15 @@ class Config:
         errors: list[str] = []
         if not cls.LLM_API_KEY:
             errors.append("LLM_API_KEY is not configured")
-        if not cls.ZEP_API_KEY:
-            errors.append("ZEP_API_KEY is not configured")
-        if os.environ.get("ZEP_API_URL"):
-            errors.append("ZEP_API_URL is not supported; MiroFish only connects to Zep Cloud")
+        if cls.GRAPH_BACKEND == "zep":
+            if not cls.ZEP_API_KEY:
+                errors.append("ZEP_API_KEY is not configured")
+            if os.environ.get("ZEP_API_URL"):
+                errors.append("ZEP_API_URL is not supported; MiroFish only connects to Zep Cloud")
+        elif cls.GRAPH_BACKEND != "local":
+            errors.append(
+                f"Unknown GRAPH_BACKEND '{cls.GRAPH_BACKEND}' (expected 'local' or 'zep')"
+            )
         if cls.DEBUG:
             import warnings
             warnings.warn("Flask DEBUG mode is enabled. Do not use in production.", RuntimeWarning)

@@ -83,7 +83,7 @@ class AgentActivityConfig:
 
 @dataclass  
 class TimeSimulationConfig:
-    """Time simulation configuration (based on Chinese daily-routine habits)"""
+    """Time simulation configuration (based on the target group daily-routine habits)"""
     # Total simulation duration (simulated hours)
     total_simulation_hours: int = 72  # Default: simulate 72 hours (3 days)
     
@@ -597,7 +597,7 @@ Field descriptions:
             return self._get_default_time_config(num_entities)
     
     def _get_default_time_config(self, num_entities: int) -> Dict[str, Any]:
-        """Get the default time configuration (Chinese daily routine)"""
+        """Get the default time configuration (target-group daily routine)"""
         return {
             "total_simulation_hours": 72,
             "minutes_per_round": 60,  # One hour per round, to speed up the flow of time
@@ -607,7 +607,7 @@ Field descriptions:
             "off_peak_hours": [0, 1, 2, 3, 4, 5],
             "morning_hours": [6, 7, 8],
             "work_hours": [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-            "reasoning": "Using the default Chinese daily-routine configuration (one hour per round)"
+            "reasoning": "Using the default daily-routine configuration (one hour per round)"
         }
     
     def _parse_time_config(self, result: Dict[str, Any], num_entities: int) -> TimeSimulationConfig:
@@ -857,7 +857,7 @@ Return format: JSON (no markdown):
             "activity_level": <0.0-1.0>,
             "posts_per_hour": <posting frequency>,
             "comments_per_hour": <commenting frequency>,
-            "active_hours": [<list of active hours, taking the Chinese daily routine into account>],
+            "active_hours": [<list of active hours, taking the target group daily routine into account>],
             "response_delay_min": <minimum response delay in minutes>,
             "response_delay_max": <maximum response delay in minutes>,
             "sentiment_bias": <-1.0 to 1.0>,
@@ -908,7 +908,7 @@ Return format: JSON (no markdown):
         return configs
     
     def _generate_agent_config_by_rule(self, entity: EntityNode) -> Dict[str, Any]:
-        """Generate a single Agent configuration from rules (Chinese daily routine)"""
+        """Generate a single Agent configuration from rules (daily routine)"""
         entity_type = (entity.get_entity_type() or "Unknown").lower()
         
         if entity_type in ["university", "governmentagency", "ngo"]:

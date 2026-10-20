@@ -484,7 +484,7 @@ def _build_graph_impl():
         
         # Check configuration
         errors = []
-        if not Config.ZEP_API_KEY:
+        if Config.GRAPH_BACKEND == "zep" and not Config.ZEP_API_KEY:
             errors.append(t('api.zepApiKeyMissing'))
         if errors:
             logger.error(f"Configuration error: {errors}")
@@ -882,7 +882,7 @@ def get_graph_data(graph_id: str):
     Get graph data (nodes and edges)
     """
     try:
-        if not Config.ZEP_API_KEY:
+        if Config.GRAPH_BACKEND == "zep" and not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
                 "error": t('api.zepApiKeyMissing')
@@ -910,7 +910,7 @@ def delete_graph(graph_id: str):
     Delete a Zep graph
     """
     try:
-        if not Config.ZEP_API_KEY:
+        if Config.GRAPH_BACKEND == "zep" and not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
                 "error": t('api.zepApiKeyMissing')

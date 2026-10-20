@@ -66,7 +66,7 @@ class GraphBuilderService:
     
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or Config.ZEP_API_KEY
-        if not self.api_key:
+        if not self.api_key and Config.GRAPH_BACKEND != "local":
             raise ValueError("ZEP_API_KEY is not configured")
         
         self.client = get_zep_client(self.api_key)
